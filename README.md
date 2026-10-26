@@ -107,4 +107,4 @@ The current implementation validates configuration data but does not connect to 
 
 ## Technical Documentation
 
-See [TECHNICAL_REPORT.md](TECHNICAL_REPORT.md) for more information about the design
+See [TECHNICAL_REPORT.md](TECHNICAL_REPORT.md) for more information about the design, implementation, testing, limitations, and future development of this project.
