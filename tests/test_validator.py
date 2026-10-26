@@ -95,3 +95,38 @@ def test_invalid_subnet():
     errors = validate_subnet_overlaps(["not-a-subnet"])
     assert len(errors) == 1
     assert "Invalid subnet" in errors[0]
+    
+    
+def test_config_detects_overlapping_subnets():
+    config = {
+        "subnets": [
+            "192.168.1.0/24",
+            "192.168.1.128/25",
+        ]
+    }
+
+    errors = validate_config(config)
+
+    assert any("Overlapping subnets" in error for error in errors)
+
+
+def test_config_accepts_non_overlapping_subnets():
+    config = {
+        "subnets": [
+            "192.168.1.0/24",
+            "192.168.2.0/24",
+        ]
+    }
+
+    assert validate_config(config) == []
+
+
+def test_config_rejects_invalid_subnets_type():
+    config = {"subnets": "192.168.1.0/24"}
+
+    errors = validate_config(config)
+
+    assert "'subnets' must be a list" in errors
+
+    
+   

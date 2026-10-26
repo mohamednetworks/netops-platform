@@ -1,3 +1,4 @@
+
 import ipaddress
 
 
@@ -74,6 +75,7 @@ def validate_config(config: dict) -> list[str]:
             continue
 
         hostname = device.get("hostname")
+
         if not isinstance(hostname, str) or not hostname.strip():
             errors.append(f"Device has an invalid hostname: {device}")
         elif hostname in hostnames:
@@ -85,6 +87,13 @@ def validate_config(config: dict) -> list[str]:
             errors.append(f"Device {hostname} is missing a management IP")
         else:
             errors.extend(validate_ip_address(device["management_ip"]))
+
+    subnets = config.get("subnets", [])
+
+    if not isinstance(subnets, list):
+        errors.append("'subnets' must be a list")
+    else:
+        errors.extend(validate_subnet_overlaps(subnets))
 
     return errors
 
