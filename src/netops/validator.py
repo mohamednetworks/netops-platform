@@ -87,3 +87,29 @@ def validate_config(config: dict) -> list[str]:
             errors.extend(validate_ip_address(device["management_ip"]))
 
     return errors
+
+
+def validate_subnet_overlaps(subnets: list[str]) -> list[str]:
+    errors = []
+    networks = []
+
+    for subnet in subnets:
+        try:
+            network = ipaddress.ip_network(subnet, strict=False)
+        except (ValueError, TypeError):
+            errors.append(f"Invalid subnet: {subnet}")
+            continue
+
+        for existing in networks:
+            if (
+                network.version == existing.version
+                and network.overlaps(existing)
+            ):
+                errors.append(
+                    f"Overlapping subnets: {existing} and {network}"
+                )
+
+        networks.append(network)
+
+    return errors
+
